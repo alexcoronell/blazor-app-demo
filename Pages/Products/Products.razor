@@ -1,6 +1,7 @@
 @page "/products"
 @inject ILogger<Products> logger;
 @inject IProductService productService;
+@inject NavigationManager navigationManager
 
 <style>
     .products-container {
@@ -14,6 +15,8 @@
 <PageTitle>Products</PageTitle>
 
 <ModuleTitle Title="Products" />
+
+<button class="btn btn-dark mb-3" @onclick="@(() => navigationManager.NavigateTo("/addproduct"))">Add Product</button>
 
 @if (products?.Count > 0)
 {

@@ -9,5 +9,7 @@ var apiUrl = builder.Configuration.GetValue<string>("apiUrl");
 
 #pragma warning disable CS8604 // Possible null reference argument.
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(apiUrl) });
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 await builder.Build().RunAsync();

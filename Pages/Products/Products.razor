@@ -1,7 +1,8 @@
 @page "/products"
-@inject ILogger<Products> logger;
+@inject ILogger<Product> logger;
 @inject IProductService productService;
 @inject NavigationManager navigationManager
+@inject IJSRuntime jSRuntime;
 
 <style>
     .products-container {
@@ -28,6 +29,7 @@
                 <div class="card-body">
                     <h4><b>@product.Title</b></h4>
                     <p>@product.Price?.ToString("C")</p>
+                    <button title="Delete" class="btn btn-danger btn-delete" @onclick="@(() => Delete(product))"><span class="oi oi-trash"></span>Del</button>
                 </div>
             </div>
         }
@@ -44,11 +46,26 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        products = await GetProducts();
+        await GetProducts();
     }
 
-    private async Task<List<Product>?> GetProducts()
+    private async Task GetProducts()
     {
-        return await productService.Get();
+        products =  await productService.Get();
+    }
+
+    private async Task Delete(Product product)
+    {
+        var confirmDelete = await jSRuntime.InvokeAsync<bool>("confirm", $"Are you sure you want to remove the product {product.Title}");
+       if (!confirmDelete)
+        {
+            return;
+        }
+        else
+        {
+            await productService.Delete(product.Id);
+            await GetProducts();
+        }
+
     }
 }
